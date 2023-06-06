@@ -1,8 +1,6 @@
 export = Writer;
 
-
-
-export class Writer {
+declare class Writer {
 	constructor(config: {
 		root_path: string | undefined,
 		split_by_date: boolean | undefined,

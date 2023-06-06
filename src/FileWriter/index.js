@@ -56,6 +56,8 @@ export default class Writer {
 				file_name += `0${t.getDate()}`.slice(-2);
 				this.#file_name_template[3] = file_name;
 			}
+
+			// 追加保存文件
 			appendFile(this.#file_name_template.join(""), this.#cache.join("\n") + "\n", (err) => {
 				if (err) {
 					console.error(err);
