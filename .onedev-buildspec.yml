@@ -1,0 +1,19 @@
+version: 21
+jobs:
+- name: 同步到github
+  steps:
+  - !PushRepository
+    name: 推送到github
+    remoteUrl: https://github.com/ajieOwO/ajielog.git
+    userName: ajieOwO
+    passwordSecret: push_to_github
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger
+    branches: master
+    projects: ajieOwO/AjieLog
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  timeout: 3600
