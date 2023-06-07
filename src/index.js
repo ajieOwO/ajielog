@@ -1,5 +1,6 @@
 import Writer from "./FileWriter/index.js";
-import Formater from "./Formater/index.js";
+import TypeFormatter from "./TypeFormatter/index.js";
+import TimeFormater from "./TimeFormatter/index.js";
 
 const list = new Map();
 
@@ -8,7 +9,8 @@ export default class AjieLog {
 
 	#writer;
 	#save_interval;
-	#formator;
+	#type_formatter;
+	#time_formatter;
 
 	constructor(config = {}) {
 		if (config?.name != "") { // 传入名称且名称不为空时，创建有名实例
@@ -24,10 +26,12 @@ export default class AjieLog {
 			...config?.file
 		});
 
-		this.#formator = new Formater({
-			force_single_row: false,
+		this.#type_formatter = new TypeFormatter({
+			force_single_row: true,
 			...config?.format
 		});
+
+		this.#time_formatter = new TimeFormater(config?.time_format || "YYYY-MM-DD HH:mm:ss.SSS");
 
 		// 初始化定时保存
 		if (!isNaN(config?.save_interval) && config.save_interval > 0) {
@@ -55,9 +59,9 @@ export default class AjieLog {
 	/**
 	 * 指定类型写入一行日志
 	 */
-	log(type, content) {
-		let time = new Date().toISOString();
-		let formatted_content = this.#formator.formatting(type, content)
+	log(content, type = "") {
+		let time = this.#time_formatter.formatting(Date.now());
+		let formatted_content = this.#type_formatter.formatting(content, type)
 		this.#writer.pushLog(time + formatted_content);
 		console.log(time + formatted_content);
 	}
@@ -66,35 +70,35 @@ export default class AjieLog {
 	 * 写入一行debug类型日志
 	 */
 	debug(content) {
-		this.log("debug", content);
+		this.log(content, "debug");
 	}
 
 	/**
 	 * 写入一行debug类型日志
 	 */
 	info(content) {
-		this.log("info", content);
+		this.log(content, "info");
 	}
 
 	/**
 	 * 写入一行warn类型日志
 	 */
 	warn(content) {
-		this.log("warn", content);
+		this.log(content, "warn");
 	}
 
 	/**
 	 * 写入一行err类型日志
 	 */
 	err(content) {
-		this.log("err", content);
+		this.log(content, "err");
 	}
 
 	/**
 	 * 写入一行fatal类型日志
 	 */
 	fatal(content) {
-		this.log("fatal", content);
+		this.log(content, "fatal");
 	}
 
 	/**

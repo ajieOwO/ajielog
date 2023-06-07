@@ -14,6 +14,7 @@ declare class AjieLog {
 		format: {
 			force_single_row: boolean
 		},
+		time_format: string | undefined;
 		save_interval: number,
 	} | undefined);
 
@@ -25,8 +26,7 @@ declare class AjieLog {
 	/**
 	 * 指定类型写入一行日志
 	 */
-	log(type: string,
-		content: string): void;
+	log(content: string, type: ?string): void;
 
 	/**
 	 * 写入一行debug类型日志
