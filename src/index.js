@@ -40,7 +40,7 @@ export default class AjieLog {
 		else {
 			this.#save_interval = 5;
 		}
-		setInterval(this.saveLog, this.#save_interval * 1000);
+		setInterval(this.saveLog.bind(this), this.#save_interval * 1000);
 	}
 
 	/**
