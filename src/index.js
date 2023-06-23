@@ -1,6 +1,6 @@
-import Writer from "./FileWriter/index.js";
-import TypeFormatter from "./TypeFormatter/index.js";
-import TimeFormater from "./TimeFormatter/index.js";
+import Writer from "./fileWriter.js";
+import TypeFormatter from "./typeFormatter.js";
+import TimeFormater from "./timeFormatter.js";
 
 const list = new Map();
 
