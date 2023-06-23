@@ -42,6 +42,10 @@ export default class Writer {
 	 * 保存日志
 	 */
 	saveLog(time_stamp) {
+		if (this.#cache.length === 0) {	// 缓冲区为空时直接退出
+			return null;
+		}
+		
 		return new Promise(async (res, rej) => {
 			if (this.#wait_for_dir) {
 				await this.#wait_for_dir;
