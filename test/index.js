@@ -1,9 +1,7 @@
 import AjieLog from "ajielog";
 
 let t = new AjieLog({
-	format: {
-		force_single_row: true
-	}
+	save_interval: 0
 });
 
 t.debug("debug content");

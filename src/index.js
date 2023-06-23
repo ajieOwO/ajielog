@@ -40,13 +40,7 @@ export default class AjieLog {
 		else {
 			this.#save_interval = 5;
 		}
-		setInterval(async () => {
-			// 只有当前一次保存任务执行完毕，才会再保存一次
-			if (!this.#saving) {
-				await this.saveLog();
-				this.#saving = false;
-			}
-		}, this.#save_interval * 1000);
+		setInterval(this.saveLog, this.#save_interval * 1000);
 	}
 
 	/**
@@ -64,6 +58,9 @@ export default class AjieLog {
 		let formatted_content = this.#type_formatter.formatting(content, type)
 		this.#writer.pushLog(time + formatted_content);
 		console.log(time + formatted_content);
+		if (this.#save_interval === 0) {
+			this.saveLog();
+		}
 	}
 
 	/**
@@ -105,6 +102,11 @@ export default class AjieLog {
 	 * 手动保存日志
 	 */
 	saveLog() {
-		return this.#writer.saveLog(Date.now());
+		return new Promise(async (res, rej) => {
+			if (this.#saving) {
+				await this.#saving;
+			}
+			this.#saving = this.#writer.saveLog(Date.now());
+		});
 	}
 }
