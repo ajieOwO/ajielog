@@ -1,6 +1,7 @@
 import Writer from "./fileWriter.js";
 import TypeFormatter from "./typeFormatter.js";
 import TimeFormater from "./timeFormatter.js";
+import logLevel from "./logLevel.js";
 
 const list = new Map();
 
@@ -10,8 +11,12 @@ export default class AjieLog {
 	#writer;	// 日志写入模块
 	#type_formatter;	// 日志类型格式化模块
 	#time_formatter;	// 日志时间格式化模块
-	
+
+	#log_level;	// 日志等级Map
+
 	#save_interval;	// 保存时间间隔
+	#write_level;	// 文件写入日志等级
+	#console_level;	// 控制台输出日志等级
 
 	constructor(config = {}) {
 		if (config?.name != "") { // 传入名称且名称不为空时，创建有名实例
@@ -42,6 +47,18 @@ export default class AjieLog {
 			this.#save_interval = 5;
 		}
 		setInterval(this.saveLog.bind(this), this.#save_interval * 1000);
+
+		this.#log_level = logLevel;	// 保存日志等级
+
+		// 保存日志等级
+		if (typeof config?.level == 'number') {	// 输入了单个日志等级
+			this.#write_level = config.level;
+			this.#console_level = config.level;
+		}
+		else {	// 输入了复合日志等级或未输入合法等级
+			this.#write_level = config?.level?.file || 0;
+			this.#console_level = config?.level?.console || 0;
+		}
 	}
 
 	/**
@@ -55,12 +72,21 @@ export default class AjieLog {
 	 * 指定类型写入一行日志
 	 */
 	log(content, type = "") {
-		let time = this.#time_formatter.formatting(Date.now());
-		let formatted_content = this.#type_formatter.formatting(content, type)
-		this.#writer.pushLog(time + formatted_content);
-		console.log(time + formatted_content);
-		if (this.#save_interval === 0) {
-			this.saveLog();
+		let log_level = this.#log_level.get(type) || 0;	// 获取日志类型等级
+		if (log_level < this.#console_level && log_level < this.#write_level) {	// 若日志等级不足则不予输出
+			return;
+		}
+
+		let time = this.#time_formatter.formatting(Date.now());	// 格式化日期
+		let formatted_content = this.#type_formatter.formatting(content, type);	// 格式化类型
+		if (log_level >= this.#console_level) {
+			this.#writer.pushLog(time + formatted_content);
+		}
+		if (log_level >= this.#write_level) {
+			console.log(time + formatted_content);
+			if (this.#save_interval === 0) {
+				this.saveLog();
+			}
 		}
 	}
 
