@@ -1,6 +1,7 @@
 import Writer from "./fileWriter.js";
-import TypeFormatter from "./typeFormatter.js";
-import TimeFormater from "./timeFormatter.js";
+import typeFormatter from "./typeFormatter.js";
+import timeFormatter from "./timeFormatter.js";
+import contentFormatter from "./contentFormatter.js";
 import logLevel from "./logLevel.js";
 
 const list = new Map();
@@ -9,14 +10,14 @@ export default class AjieLog {
 	#saving = false; // 是否正在保存
 
 	#writer;	// 日志写入模块
-	#type_formatter;	// 日志类型格式化模块
-	#time_formatter;	// 日志时间格式化模块
 
 	#log_level;	// 日志等级Map
 
 	#save_interval;	// 保存时间间隔
 	#write_level;	// 文件写入日志等级
 	#console_level;	// 控制台输出日志等级
+	#time_format; // 日期时间格式
+	#content_format; // 内容格式
 
 	constructor(config = {}) {
 		if (config?.name != "") { // 传入名称且名称不为空时，创建有名实例
@@ -32,12 +33,12 @@ export default class AjieLog {
 			...config?.file
 		});
 
-		this.#type_formatter = new TypeFormatter({
+		this.#time_format = config?.time_format || "YYYY-MM-DD HH:mm:ss.SSS";
+
+		this.#content_format = {
 			force_single_row: true,
 			...config?.format
-		});
-
-		this.#time_formatter = new TimeFormater(config?.time_format || "YYYY-MM-DD HH:mm:ss.SSS");
+		};
 
 		// 初始化定时保存
 		if (!isNaN(config?.save_interval) && config.save_interval > 0) {
@@ -77,13 +78,14 @@ export default class AjieLog {
 			return;
 		}
 
-		let time = this.#time_formatter.formatting(Date.now());	// 格式化日期
-		let formatted_content = this.#type_formatter.formatting(content, type);	// 格式化类型
+		let time_text = timeFormatter(Date.now(), this.#time_format);	// 格式化日期
+		let type_text = typeFormatter(type);	// 格式化类型
+		let content_text = contentFormatter(content, this.#content_format);
 		if (log_level >= this.#console_level) {
-			this.#writer.pushLog(time + formatted_content);
+			this.#writer.pushLog(time_text + type_text + content_text);
 		}
 		if (log_level >= this.#write_level) {
-			console.log(time + formatted_content);
+			console.log(time_text + type_text + content_text);
 			if (this.#save_interval === 0) {
 				this.saveLog();
 			}
