@@ -7,10 +7,11 @@ const list = new Map();
 export default class AjieLog {
 	#saving = false; // 是否正在保存
 
-	#writer;
-	#save_interval;
-	#type_formatter;
-	#time_formatter;
+	#writer;	// 日志写入模块
+	#type_formatter;	// 日志类型格式化模块
+	#time_formatter;	// 日志时间格式化模块
+	
+	#save_interval;	// 保存时间间隔
 
 	constructor(config = {}) {
 		if (config?.name != "") { // 传入名称且名称不为空时，创建有名实例
