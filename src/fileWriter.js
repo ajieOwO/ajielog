@@ -15,7 +15,7 @@ export default class Writer {
 		this.#file_name_template = [
 			root_path,
 			"/",
-			file_name,
+			file_name.length ? file_name + "_" : "",
 			"",
 			".",
 			extension
@@ -45,7 +45,7 @@ export default class Writer {
 		if (this.#cache.length === 0) {	// 缓冲区为空时直接退出
 			return null;
 		}
-		
+
 		return new Promise(async (res, rej) => {
 			if (this.#wait_for_dir) {
 				await this.#wait_for_dir;
@@ -55,7 +55,7 @@ export default class Writer {
 			// 若日志文件按日期分割
 			if (this.#split_by_date) {
 				let t = new Date(time_stamp);
-				let file_name = `_${t.getFullYear()}-`;
+				let file_name = `${t.getFullYear()}-`;
 				file_name += `0${t.getMonth() + 1}-`.slice(-3);
 				file_name += `0${t.getDate()}`.slice(-2);
 				this.#file_name_template[3] = file_name;
