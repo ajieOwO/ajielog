@@ -1,31 +1,21 @@
 version: 21
 jobs:
-- name: 同步到github
+- name: 同步下游仓库
   steps:
+  - !PushRepository
+    name: 推送到gitee
+    remoteUrl: https://gitee.com/ajieOwO/ajielog.git
+    userName: ajieOwO
+    passwordSecret: push_to_gitee_ajieOwO
+    force: true
+    condition: ALWAYS
   - !PushRepository
     name: 推送到github
     remoteUrl: https://github.com/ajieOwO/ajielog.git
     userName: ajieOwO
-    passwordSecret: push_to_github
+    passwordSecret: push_to_github_ajieOwO
     force: true
-    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
-  triggers:
-  - !BranchUpdateTrigger
-    branches: master
-    projects: ajieOwO/AjieLog
-  retryCondition: never
-  maxRetries: 3
-  retryDelay: 30
-  timeout: 3600
-- name: 同步到gitee
-  steps:
-  - !PushRepository
-    name: push_to_gitee
-    remoteUrl: https://gitee.com/ajieOwO/ajielog.git
-    userName: ajieOwO
-    passwordSecret: push_to_gitee
-    force: true
-    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+    condition: ALWAYS
   triggers:
   - !BranchUpdateTrigger
     branches: master
