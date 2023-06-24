@@ -81,10 +81,10 @@ export default class AjieLog {
 		let time_text = timeFormatter(Date.now(), this.#time_format);	// 格式化日期
 		let type_text = typeFormatter(type);	// 格式化类型
 		let content_text = contentFormatter(content, this.#content_format);
-		if (log_level >= this.#console_level) {
+		if (log_level >= this.#write_level) {
 			this.#writer.pushLog(time_text + type_text + content_text);
 		}
-		if (log_level >= this.#write_level) {
+		if (log_level >= this.#console_level) {
 			console.log(time_text + type_text + content_text);
 			if (this.#save_interval === 0) {
 				this.saveLog();
