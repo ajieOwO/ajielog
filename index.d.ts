@@ -1,4 +1,4 @@
-declare module "ajielog"{
+declare module "ajielog" {
 	export default AjieLog;
 	export {
 		AjieLog
@@ -7,22 +7,22 @@ declare module "ajielog"{
 
 declare class AjieLog {
 	constructor(config: {
-		name: string | undefined,
+		name: string | undefined,	// 日志模块名称（默认为匿名模块）
 		file: {
-			root_path: string | undefined,
-			split_by_date: boolean | undefined,
-			extension: string | undefined,
-			file_name: string | undefined
+			root_path: string | undefined, // 日志文件保存根路径（默认为log）
+			split_by_date: boolean | undefined,	// 日志是否按日期分割（默认为true）
+			extension: string | undefined,	// 日志文件拓展名（默认为log）
+			file_name: string | undefined	// 日志文件前缀（默认为myLog）
 		} | undefined,
 		format: {
-			force_single_row: boolean
+			force_single_row: boolean	// 日志是否强制单行（默认为true）
 		},
 		level: {
-			file: number,
-			console: number
-		} | number | undefined,
-		time_format: string | undefined,
-		save_interval: number,
+			file: number,	// 文件保存的日志等级（默认为0）
+			console: number	// 控制台输出的日志等级（默认为0）
+		} | number | undefined,	// 一次性设置文件保存和控制台输出的日志等级（默认为0）
+		time_format: string | undefined,	// 时间日期的格式（默认为"YYYY-MM-DD HH:mm:ss.SSS"）
+		save_interval: number,	// 日志文件保存间隔，单位秒。0为立即保存（默认为5）
 	} | undefined);
 
 	/**
@@ -65,4 +65,3 @@ declare class AjieLog {
 	 */
 	saveLog(): Promise<void>
 }
-
