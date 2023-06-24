@@ -17,8 +17,7 @@ export default class Writer {
 			"/",
 			file_name.length ? file_name + "_" : "",
 			"",
-			".",
-			extension
+			extension.length ? "." + extension : ""
 		];
 
 		this.#wait_for_dir = new Promise(async (res, rej) => {
